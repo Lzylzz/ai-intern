@@ -1,2 +1,2 @@
-# ai-intern
-For the online ai intern practice
+# Lyu Zhengyao Project
+For the online ai project
