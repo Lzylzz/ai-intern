@@ -1,11 +1,13 @@
-# Skills Demo with LangChain
+# Skills Demo with LangChain (Qwen / OpenAI)
 
 This project demonstrates how to use "skills" (implemented as tools) with an LLM agent that autonomously chooses which skill to use to complete a workflow.
+
+It supports **Alibaba Cloud Qwen (DashScope)** and **OpenAI**.
 
 ## Prerequisites
 
 - Python 3.9+
-- OpenAI API Key
+- Qwen (DashScope) API Key OR OpenAI API Key
 
 ## Setup
 
@@ -14,9 +16,13 @@ This project demonstrates how to use "skills" (implemented as tools) with an LLM
     pip install -r requirements.txt
     ```
 
-2.  Configure your OpenAI API Key:
+2.  Configure your API Key:
     - Rename `.env.example` to `.env`.
-    - Edit `.env` and replace `your_openai_api_key_here` with your actual OpenAI API key.
+    - Edit `.env` and fill in your API key:
+        - **For Qwen**: Fill in `DASHSCOPE_API_KEY`. Get it from [Aliyun DashScope Console](https://dashscope.console.aliyun.com/apiKey).
+        - **For OpenAI**: Fill in `OPENAI_API_KEY`.
+    
+    The code prioritizes `DASHSCOPE_API_KEY` if both are present.
 
 ## Running the Demo
 
@@ -33,7 +39,7 @@ python main.py
     -   `generate_lucky_number(user_name)`: Returns a lucky number.
     -   `recommend_food(mood)`: Recommends food based on mood.
 
--   **`main.py`**: Initializes a LangChain agent with `ChatOpenAI` and the tools from `my_skills.py`.
+-   **`main.py`**: Initializes a LangChain agent with `ChatOpenAI` (compatible with Qwen) and the tools from `my_skills.py`.
     -   The agent receives user input.
     -   It autonomously decides which tool(s) to call based on the input.
     -   It executes the tool(s) and returns the final response.
