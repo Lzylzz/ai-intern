@@ -1,10 +1,98 @@
 from langchain.tools import tool
 import random
+import os
+import urllib.request
 
 class Skills:
     """
     A collection of skills that can be used by the agent.
     """
+
+    @staticmethod
+    @tool
+    def list_available_skills() -> list[str]:
+        """
+        List all available skills in the skills directory.
+        
+        Returns:
+            list[str]: A list of available skill names.
+        """
+        skills_dir = os.path.join(os.path.dirname(__file__), "skills")
+        if not os.path.exists(skills_dir):
+            return []
+        
+        skills = []
+        for name in os.listdir(skills_dir):
+            if os.path.isdir(os.path.join(skills_dir, name)) and os.path.exists(os.path.join(skills_dir, name, "SKILL.md")):
+                skills.append(name)
+        return skills
+
+    @staticmethod
+    @tool
+    def load_skill(skill_name: str) -> str:
+        """
+        Load the instructions and content of a specific skill.
+        Use this when you need to perform a task related to a specific skill (e.g., "brand-guidelines").
+        
+        Args:
+            skill_name (str): The name of the skill to load (e.g., "brand-guidelines").
+            
+        Returns:
+            str: The content of the skill's instruction file (SKILL.md).
+        """
+        skills_dir = os.path.join(os.path.dirname(__file__), "skills")
+        skill_path = os.path.join(skills_dir, skill_name, "SKILL.md")
+        
+        if not os.path.exists(skill_path):
+            return f"Error: Skill '{skill_name}' not found."
+            
+        try:
+            with open(skill_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            return content
+        except Exception as e:
+            return f"Error reading skill file: {e}"
+
+    @staticmethod
+    @tool
+    def web_fetch(url: str) -> str:
+        """
+        Fetch content from a URL.
+        Use this tool when a skill instruction requires fetching external resources (e.g., guidelines, rules).
+        
+        Args:
+            url (str): The URL to fetch.
+            
+        Returns:
+            str: The content of the URL or an error message.
+        """
+        try:
+            with urllib.request.urlopen(url) as response:
+                return response.read().decode('utf-8')
+        except Exception as e:
+            return f"Error fetching URL: {e}"
+
+    @staticmethod
+    @tool
+    def read_file(file_path: str) -> str:
+        """
+        Read the content of a file from the local filesystem.
+        Use this tool when you need to analyze code or content in a file.
+        
+        Args:
+            file_path (str): The path to the file to read.
+            
+        Returns:
+            str: The content of the file or an error message.
+        """
+        if not os.path.exists(file_path):
+            return f"Error: File '{file_path}' not found."
+            
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                return f.read()
+        except Exception as e:
+            return f"Error reading file: {e}"
 
     @staticmethod
     @tool
@@ -66,4 +154,4 @@ class Skills:
         return f"Since you are feeling {mood}, I recommend you eat: {recommendations.get(mood.lower(), 'A healthy salad')}."
 
 # List of tools to be exported
-tools = [Skills.get_weather, Skills.generate_lucky_number, Skills.recommend_food]
+tools = [Skills.get_weather, Skills.generate_lucky_number, Skills.recommend_food, Skills.list_available_skills, Skills.load_skill, Skills.web_fetch, Skills.read_file]

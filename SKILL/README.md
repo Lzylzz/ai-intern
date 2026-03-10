@@ -38,6 +38,10 @@ python main.py
     -   `get_weather(city)`: Returns weather info.
     -   `generate_lucky_number(user_name)`: Returns a lucky number.
     -   `recommend_food(mood)`: Recommends food based on mood.
+    -   `list_available_skills()`: Lists available Anthropic-style skills in the `skills/` directory.
+    -   `load_skill(skill_name)`: Loads the content of a specific skill (e.g., `brand-guidelines`).
+
+-   **`skills/` Directory**: Contains subdirectories for each skill, following the [Anthropic Agent Skills](https://github.com/anthropics/skills) structure. Each skill folder must contain a `SKILL.md` file.
 
 -   **`main.py`**: Initializes a LangChain agent with `ChatOpenAI` (compatible with Qwen) and the tools from `my_skills.py`.
     -   The agent receives user input.
@@ -48,3 +52,4 @@ python main.py
 
 -   **Single Skill**: "What's the weather in Beijing?" (Uses `get_weather`)
 -   **Workflow**: "I'm feeling sad, what should I eat? Also, what's my lucky number? I'm Bob." (Uses `recommend_food` and `generate_lucky_number`)
+-   **Dynamic Skill Loading**: "What are the brand guidelines for Anthropic?" (Uses `load_skill` to fetch the content of `brand-guidelines`)

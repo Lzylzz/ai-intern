@@ -71,10 +71,17 @@ def main():
                 messages.append(ai_msg)
 
                 for tool_call in ai_msg.tool_calls:
-                     selected_tool = {"get_weather": tools[0], "generate_lucky_number": tools[1], "recommend_food": tools[2]}[tool_call["name"]]
-                     tool_output = selected_tool.invoke(tool_call["args"])
-                     print(f"  - Tool '{tool_call['name']}' returned: {tool_output}")
-                     messages.append(ToolMessage(str(tool_output), tool_call_id=tool_call["id"]))
+                     # selected_tool = {"get_weather": tools[0], "generate_lucky_number": tools[1], "recommend_food": tools[2]}[tool_call["name"]]
+                     # Dynamically find the tool by name from the tools list
+                     selected_tool = next((t for t in tools if t.name == tool_call["name"]), None)
+                     
+                     if selected_tool:
+                        tool_output = selected_tool.invoke(tool_call["args"])
+                        print(f"  - Tool '{tool_call['name']}' returned: {tool_output}")
+                        messages.append(ToolMessage(str(tool_output), tool_call_id=tool_call["id"]))
+                     else:
+                        print(f"  - Error: Tool '{tool_call['name']}' not found.")
+                        messages.append(ToolMessage(f"Error: Tool '{tool_call['name']}' not found.", tool_call_id=tool_call["id"]))
                 
                 # 3. Get final response
                 final_response = llm_with_tools.invoke(messages)
